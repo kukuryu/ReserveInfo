@@ -60,6 +60,23 @@ function init() {
 
         await page.click("#log.login");
         await page.waitForNavigation();
+        
+        let reserveUrl = "https://partner.booking.naver.com/api/businesses/782428/bookings?bizItemTypes=STANDARD&bookingStatusCodes=&dateDropdownType=DIRECT&dateFilter=USEDATE&";
+        reserveUrl +="endDateTime=" + "2023-04-08T16%3A50%3A39.287Z" +"&maxDays=31&nPayChargedStatusCodes=&orderBy=&orderByStartDate=DESC&paymentStatusCodes=&searchValue=&searchValueCode=USER_NAME&";
+        reserveUrl +="startDateTime="+ "2023-04-07T16%3A50%3A39.287Z"+"&page=0&size=150&noCache=1680886245895";//임의난수?
+
+        await page.setRequestInterception(true);
+        page.on("request", interceptedRequest => {
+          console.log('가로채기');
+          interceptedRequest.continue({
+            method:"POST",
+            url:reserveUrl,
+            headers:{
+              ...interceptedRequest.headers()
+            }
+          })
+        })
+
 
         //await browser.close();
         // 스크린샷을 찍는다.
@@ -86,7 +103,9 @@ function init() {
 
 app.whenReady().then(() => {
   init();
-  app.on("activate", () => {
+    alert();
+    app.on("activate", () => {
+    alert();
     if (BrowserWindow.getAllWindows().length === 0) {
       //init();
     }
